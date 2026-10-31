@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzeria Partenope - Bassano del Grappa</title>
+    <!-- Google Fonts: Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: #fcfbfa; 
+            color: #333; 
+            overflow-x: hidden; 
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* --- SEZIONI (GESTIONE VISIBILITÀ) --- */
+        .page-section {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+        .page-section.active-section {
+            display: block;
+        }
+
+        /* --- STILI HOME SPLASH (CENTRATURA ASSOLUTA FISSA) --- */
+        .splash-screen {
+            background-color: #9e2a2b; /* Rosso terracotta/mattone della tradizione partenopea */
+            color: #fff;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .welcome-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Stile specifico per la schermata di selezione categorie del Menu (centrata e scorrevole) */
+        .menu-home-container {
+            background-color: #9e2a2b;
+            color: #fff;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .menu-home-content-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .logo-title-large {
+            font-size: 2.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: fadeInDown 0.8s ease;
+        }
+        .logo-subtitle-large {
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            margin-bottom: 35px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            animation: fadeInDown 0.8s ease 0.2s backwards;
+        }
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 280px;
+            align-items: center;
+            margin: 0 auto;
+        }
+        .nav-btn-home {
+            background-color: #ffffff;
+            color: #9e2a2b;
+            padding: 12px 26px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        .nav-btn-home:hover {
+            background-color: #f4f4f4;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Stile specifico per il tasto "Torna alla Home" nel menu categorie */
+        .nav-btn-dark {
+            background-color: #333;
+            color: #fff;
+        }
+        .nav-btn-dark:hover {
+            background-color: #9e2a2b;
+            color: #fff;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HEADER COMUNE --- */
+        header { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .navbar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; }
+        .nav-logo-container { display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; }
+        .nav-logo-text { font-weight: 800; font-size: 1.1rem; color: #9e2a2b; letter-spacing: 0.5px; text-transform: uppercase; }
+        
+        .nav-links { list-style: none; display: flex; gap: 20px; align-items: center; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.9rem; transition: color 0.3s; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-links a:hover, .nav-links a.active { color: #9e2a2b; }
+
+        /* --- SEZIONI CONTENUTO --- */
+        .content-section { padding: 50px 20px; max-width: 1000px; margin: 0 auto; }
+        .content-section h2 { font-size: 2.2rem; font-weight: 800; color: #9e2a2b; text-align: center; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 1px; }
+        .content-section h2::after { content: ''; width: 50px; height: 4px; background-color: #9e2a2b; display: block; margin: 10px auto 0; border-radius: 2px; }
+
+        /* --- SOTTOCATEGORIE MENU (CONTENITORE PRODOTTI) --- */
+        .menu-category-content { display: none; }
+        .menu-category-content.active-category { display: block; }
+
+        .menu-category { margin-bottom: 45px; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .menu-category h3 { font-size: 1.4rem; font-weight: 700; color: #222; margin-bottom: 20px; border-bottom: 2px solid #9e2a2b; padding-bottom: 8px; text-transform: uppercase; }
+
+        .menu-item { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; border-bottom: 1px dotted #eee; padding-bottom: 10px; }
+        .menu-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .menu-item-info { max-width: 80%; }
+        .menu-item-name { font-weight: 700; font-size: 1.05rem; color: #222; }
+        .menu-item-ingredients { font-size: 0.88rem; color: #666; margin-top: 3px; }
+        .menu-item-price { font-weight: 800; color: #9e2a2b; font-size: 1.1rem; }
+        
+        .menu-legend { margin-top: 20px; font-size: 0.85rem; color: #666; font-style: italic; line-height: 1.6; }
+
+        /* --- GALLERIA FOTOGRAFICA (GRIGLIA 2x2 PERFETTAMENTE ORDINATA) --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 320px);
+            gap: 25px;
+            justify-content: center;
+            max-width: 700px;
+            margin: 0 auto 40px auto;
+        }
+        .gallery-item {
+            background: white;
+            padding: 12px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+        }
+
+        /* --- CHI SIAMO / STORIA --- */
+        .story-container { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); line-height: 1.8; font-size: 1.05rem; color: #444; text-align: center; max-width: 800px; margin: 0 auto 30px auto; }
+        .story-container p { margin-bottom: 20px; }
+        .story-container p:last-child { margin-bottom: 0; }
+        .story-quote { font-weight: 700; color: #9e2a2b; font-size: 1.2rem; margin-top: 30px; display: block; }
+
+        /* --- ORARI & DOVE SIAMO --- */
+        .info-column-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .info-card { background: white; padding: 30px 20px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); text-align: center; width: 100%; }
+        .info-card h3 { margin-bottom: 15px; color: #222; font-size: 1.2rem; font-weight: 700; }
+        .info-card p { color: #555; line-height: 1.6; font-size: 0.95rem; }
+        
+        /* Indirizzo sistemato per andare a capo correttamente su mobile */
+        .address-text {
+            word-break: break-word;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .hours-table { width: 100%; margin-top: 10px; border-collapse: collapse; text-align: left; }
+        .hours-table tr { border-bottom: 1px solid #eee; }
+        .hours-table tr:last-child { border-bottom: none; }
+        .hours-table td { padding: 8px 0; font-size: 0.9rem; color: #444; }
+        .hours-table td.day { font-weight: 600; text-transform: capitalize; }
+        .hours-table td.time { text-align: right; font-weight: 700; color: #9e2a2b; }
+        .hours-table td.closed { text-align: right; font-weight: 600; color: #888; }
+
+        .btn-map { background-color: #9e2a2b; color: white; padding: 10px 22px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-block; transition: background 0.3s; margin-top: 15px; }
+        .btn-map:hover { background-color: #7d2122; }
+
+        /* --- CONTATTI --- */
+        .contact-section-wrapper { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; min-height: 50vh; }
+        .phone-large { font-size: 2.2rem; color: #9e2a2b; font-weight: 800; text-decoration: none; margin: 15px 0 5px 0; display: inline-block; transition: opacity 0.2s; }
+        .phone-large:hover { opacity: 0.8; }
+        .whatsapp-subtext { font-size: 0.95rem; color: #666; font-weight: 500; margin-bottom: 25px; }
+
+        .social-buttons-container { display: flex; gap: 12px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+        .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, opacity 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.08); color: white; }
+        .social-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        .btn-instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .btn-facebook { background-color: #1877f2; }
+        .btn-review { background-color: #9e2a2b; }
+        .btn-review:hover { background-color: #7d2122; }
+
+        /* --- TASTO TORNA INDIETRO --- */
+        .back-home-container { text-align: center; margin-top: 45px; margin-bottom: 10px; }
+        .btn-back-home {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .btn-back-home:hover { background-color: #9e2a2b; }
+
+        /* --- FOOTER --- */
+        footer { background-color: #222; color: #aaa; text-align: center; padding: 35px 20px; font-size: 0.85rem; margin-top: 40px; }
+        footer p { margin-bottom: 5px; }
+
+        @media (max-width: 768px) { .nav-links { display: none; } }
+    </style>
+</head>
+<body>
+
+    <!-- 1. HOME / SPLASH SCREEN -->
+    <div id="home-screen" class="page-section active-section splash-screen">
+        <div class="welcome-container">
+            <h1 class="logo-title-large">Pizzeria Partenope</h1>
+            <p class="logo-subtitle-large">Always a good idea</p>
+            <div class="nav-buttons">
+                <a onclick="switchPage('menu')" class="nav-btn-home">Menu</a>
+                <a onclick="switchPage('chisiamo')" class="nav-btn-home">Chi Siamo</a>
+                <a onclick="switchPage('galleria')" class="nav-btn-home">Galleria</a>
+                <a onclick="switchPage('orari')" class="nav-btn-home">Orari & Dove</a>
+                <a onclick="switchPage('contatti')" class="nav-btn-home">Contatti</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- WRAPPER PER LE PAGINE INTERNE (HEADER COMUNE) -->
+    <div id="main-site-wrapper" style="display: none;">
+        <header>
+            <nav class="navbar">
+                <a onclick="switchPage('home')" class="nav-logo-container">
+                    <span class="nav-logo-text">Pizzeria Partenope</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a onclick="switchPage('home')" id="link-home">Home</a></li>
+                    <li><a onclick="switchPage('menu')" id="link-menu">Menu</a></li>
+                    <li><a onclick="switchPage('chisiamo')" id="link-chisiamo">Chi Siamo</a></li>
+                    <li><a onclick="switchPage('galleria')" id="link-galleria">Galleria</a></li>
+                    <li><a onclick="switchPage('orari')" id="link-orari">Orari & Dove</a></li>
+                    <li><a onclick="switchPage('contatti')" id="link-contatti">Contatti</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- 2. MENU PRINCIPALE (CATEGORIE) -->
+        <div id="menu-section" class="page-section">
+            
+            <div id="menu-home-view" class="menu-home-container">
+                <div class="menu-home-content-inner">
+                    <h1 class="logo-title-large" style="font-size: 2.2rem;">Il Nostro Menu</h1>
+                    <p class="logo-subtitle-large">Scegli una categoria</p>
+                    <div class="nav-buttons">
+                        <a onclick="openMenuCategory('classiche')" class="nav-btn-home">Pizze Classiche</a>
+                        <a onclick="openMenuCategory('bianche')" class="nav-btn-home">Pizze Bianche</a>
+                        <a onclick="openMenuCategory('specialita')" class="nav-btn-home">Specialità</a>
+                        <a onclick="openMenuCategory('fritti')" class="nav-btn-home">Fritti</a>
+                        <a onclick="openMenuCategory('metro')" class="nav-btn-home">Pizza al Metro</a>
+                        <a onclick="switchPage('home')" class="nav-btn-home nav-btn-dark">Torna alla Home</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENITORE ELENCO PRODOTTI (MOSTRATO SOLO DOPO IL CLICK) -->
+            <div id="menu-products-view" class="content-section" style="display: none;">
+                
+                <!-- PIZZE CLASSICHE -->
+                <div id="cat-classiche" class="menu-category-content menu-category">
+                    <h3>Pizze Classiche</h3>
+                    
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Marinara</div><div class="menu-item-ingredients">Pomodoro, origano, aglio</div></div><div class="menu-item-price">5,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Margherita</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, basilico</div></div><div class="menu-item-price">6,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Bufalina</div><div class="menu-item-ingredients">Pomodoro, mozzarella di bufala, basilico</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Romana</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, acciughe, capperi</div></div><div class="menu-item-price">7,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Capricciosa</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, prosciutto cotto, carciofi, funghi, olive nere</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Quattro stagioni</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, prosciutto cotto, carciofi, funghi, salamino piccante</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Prosciutto</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, prosciutto cotto</div></div><div class="menu-item-price">7,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Tirolese</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, speck</div></div><div class="menu-item-price">7,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Diavola</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, salamino piccante</div></div><div class="menu-item-price">7,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Primavera</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, rucola, prosciutto crudo, pomodorini in cottura, grana a scaglie</div></div><div class="menu-item-price">9,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Friulana</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, prosciutto crudo</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Prosciutto e funghi</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, prosciutto cotto, funghi</div></div><div class="menu-item-price">7,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Valtellinese</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, bresaola, rucola, grana a scaglie</div></div><div class="menu-item-price">9,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Pizza Deborah</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, pancetta stufata, provola, pomodorini in cottura</div></div><div class="menu-item-price">8,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Tonno e cipolle</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, tonno, cipolle di Tropea</div></div><div class="menu-item-price">7,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Verdure</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, verdure al forno (melanzane, zucchine, peperoni)</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Patatosa</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, patatine al forno</div></div><div class="menu-item-price">7,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Billo</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, bresaola, provola, carciofi</div></div><div class="menu-item-price">8,50</div></div>
+
+                    <div class="menu-legend" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
+                        Le aggiunte variano da 0,50 a 3,00<br>
+                        Bordo ripieno + 1,50<br>
+                        A ruota di carro + 1,50<br><br>
+                        <strong>TUTTE LE NOSTRE PIZZE VENGONO CONDITE CON OLIO EXTRAVERGINE D'OLIVA</strong><br><br>
+                        * Prodotto congelato.<br><br>
+                        Le informazioni circa la presenza di prodotti che provocano allergie o intolleranze sono disponibili rivolgendosi al personale.
+                    </div>
+                </div>
+
+                <!-- PIZZE BIANCHE -->
+                <div id="cat-bianche" class="menu-category-content menu-category">
+                    <h3>Pizze Bianche</h3>
+                    
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Porchis</div><div class="menu-item-ingredients">Provola, porchetta, patate al forno</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Americana</div><div class="menu-item-ingredients">Provola, wurstel, patate al forno</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Partenope</div><div class="menu-item-ingredients">Provola, salsiccia, friarielli</div></div><div class="menu-item-price">8,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Trevigiana (solo di stagione)</div><div class="menu-item-ingredients">Provola, salsiccia, radicchio</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Nostrana</div><div class="menu-item-ingredients">Provola, salsiccia, peperoni</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Porcini</div><div class="menu-item-ingredients">Fioridilatte, porcini*, grana a scaglie</div></div><div class="menu-item-price">8,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Ortolana</div><div class="menu-item-ingredients">Fioridilatte, verdure al forno</div></div><div class="menu-item-price">7,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Quattro formaggi</div><div class="menu-item-ingredients">Fioridilatte, gorgonzola, Asiago, provola</div></div><div class="menu-item-price">8,00</div></div>
+
+                    <div class="menu-legend" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
+                        Le aggiunte variano da 0,50 a 3,00<br>
+                        Bordo ripieno + 1,50<br>
+                        A ruota di carro + 1,50<br><br>
+                        <strong>TUTTE LE NOSTRE PIZZE VENGONO CONDITE CON OLIO EXTRAVERGINE D'OLIVA</strong><br><br>
+                        * Prodotto congelato.<br><br>
+                        Le informazioni circa la presenza di prodotti che provocano allergie o intolleranze sono disponibili rivolgendosi al personale.
+                    </div>
+                </div>
+
+                <!-- SPECIALITA' -->
+                <div id="cat-specialita" class="menu-category-content menu-category">
+                    <h3>Specialità</h3>
+                    
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Bolognese</div><div class="menu-item-ingredients">Provola, mortadella, granella di pistacchio, burrata</div></div><div class="menu-item-price">10,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Monica</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, prosciutto crudo, pomodorini secchi e burrata</div></div><div class="menu-item-price">10,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Cosacca</div><div class="menu-item-ingredients">Pomodoro, pomodorini, aglio e grana dopo cottura</div></div><div class="menu-item-price">6,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Calzone al forno</div><div class="menu-item-ingredients">Fioridilatte, pomodoro, ricotta, prosciutto cotto, funghi</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Luna</div><div class="menu-item-ingredients">Metà calzone al forno e metà margherita</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Bacio</div><div class="menu-item-ingredients">Panino realizzato con impasto della pizza (farcito con salumi a scelta)</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Super patatosa</div><div class="menu-item-ingredients">Provola, patate* al forno, salsiccia, pepe</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Super Marinara</div><div class="menu-item-ingredients">Pomodoro, origano, aglio, acciughe, olive nere</div></div><div class="menu-item-price">6,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Super Capricciosa</div><div class="menu-item-ingredients">Fioridilatte, funghi, carciofi, prosciutto cotto, salamino, olive nere, pecorino sardo a scaglie</div></div><div class="menu-item-price">9,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Super Casatiello</div><div class="menu-item-ingredients">Provola, pecorino romano, provolone piccante, cicoli, salame, pepe</div></div><div class="menu-item-price">9,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Verace Matura</div><div class="menu-item-ingredients">Pomodoro, fioridilatte, pecorino romano, basilico</div></div><div class="menu-item-price">7,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Carbonara</div><div class="menu-item-ingredients">Provola, pecorino romano, uova, pancetta stufata, pepe</div></div><div class="menu-item-price">9,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Mario</div><div class="menu-item-ingredients">Fioridilatte, pecorino sardo, salamino piccante, friarielli, pepe</div></div><div class="menu-item-price">9,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Cacio e pepe</div><div class="menu-item-ingredients">Provola, pecorino sardo, pepe</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Parmigiana</div><div class="menu-item-ingredients">Pomodoro, provola, melanzane al forno, grana</div></div><div class="menu-item-price">8,50</div></div>
+
+                    <div class="menu-legend" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
+                        Le aggiunte variano da 0,50 a 3,00<br>
+                        Bordo ripieno + 1,50<br>
+                        A ruota di carro + 1,50<br><br>
+                        <strong>TUTTE LE NOSTRE PIZZE VENGONO CONDITE CON OLIO EXTRAVERGINE D'OLIVA</strong><br><br>
+                        * Prodotto congelato.<br><br>
+                        Le informazioni circa la presenza di prodotti che provocano allergie o intolleranze sono disponibili rivolgendosi al personale.
+                    </div>
+                </div>
+
+                <!-- FRITTI -->
+                <div id="cat-fritti" class="menu-category-content menu-category">
+                    <h3>Fritti</h3>
+                    
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Montanare</div><div class="menu-item-ingredients">4 piccoli dischi di impasto fritti conditi con: pomodoro, fioridilatte, grana e basilico</div></div><div class="menu-item-price">6,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Supermontanare</div><div class="menu-item-ingredients">• mortadella, granella di pistacchio, pesto di basilico<br>• cacio e pepe<br>• classica<br>• cicoli e ricotta</div></div><div class="menu-item-price">7,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Calzone Italia</div><div class="menu-item-ingredients">Calzone fritto con mozzarella, pomodoro e basilico</div></div><div class="menu-item-price">6,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Calzone Classico</div><div class="menu-item-ingredients">Calzone fritto con ricotta, provola, cicoli e pepe</div></div><div class="menu-item-price">8,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Calzone Totò</div><div class="menu-item-ingredients">Calzone fritto con ricotta, provola, salame napoli, pepe. Dopo cottura passato in forno con l'aggiunta di pomodoro, provola e grana padano</div></div><div class="menu-item-price">8,50</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Calzone Peppino</div><div class="menu-item-ingredients">Calzone fritto con prosciutto cotto e provola. Dopo cottura passato in forno con aggiunta di pomodoro e grana padano</div></div><div class="menu-item-price">8,00</div></div>
+
+                    <div class="menu-legend" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
+                        * Prodotto congelato.<br><br>
+                        Le informazioni circa la presenza di prodotti che provocano allergie o intolleranze sono disponibili rivolgendosi al personale.
+                    </div>
+                </div>
+
+                <!-- PIZZA AL METRO -->
+                <div id="cat-metro" class="menu-category-content menu-category">
+                    <h3>Pizza al Metro <br><span style="font-size: 1rem; font-weight: 600; color: #555;">(60x40 cm)</span></h3>
+                    
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Margherita</div></div><div class="menu-item-price">18,00</div></div>
+                    <div class="menu-item"><div class="menu-item-info"><div class="menu-item-name">Farcita</div></div><div class="menu-item-price">25,00</div></div>
+
+                    <div class="menu-legend" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
+                        Le aggiunte variano da 0,50 a 3,00<br>
+                        Bordo ripieno + 1,50<br>
+                        A ruota di carro + 1,50<br><br>
+                        <strong>TUTTE LE NOSTRE PIZZE VENGONO CONDITE CON OLIO EXTRAVERGINE D'OLIVA</strong><br><br>
+                        * Prodotto congelato.<br><br>
+                        Le informazioni circa la presenza di prodotti che provocano allergie o intolleranze sono disponibili rivolgendosi al personale.
+                    </div>
+                </div>
+
+                <!-- TASTO PER TORNARE ALLA SCELTA CATEGORIE MENU -->
+                <div class="back-home-container">
+                    <a onclick="backToMenuHome()" class="btn-back-home">← Torna alle categorie</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. CHI SIAMO PAGE -->
+        <div id="chisiamo-section" class="page-section content-section">
+            <h2>Chi Siamo</h2>
+            <div class="story-container">
+                <p><strong>Pizzeria Partenope</strong> nasce dalla passione per la vera pizza napoletana e l'amore per i prodotti di alta qualità.</p>
+                <p>Portiamo avanti la tradizione dell'arte bianca con impasti studiati per garantire leggerezza, digeribilità e fragranza, abbinati a ingredienti selezionati con cura dal territorio e dalla Campania.</p>
+                <span class="story-quote">"Partenope is always a good idea."</span>
+            </div>
+
+            <div class="back-home-container">
+                <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+            </div>
+        </div>
+
+        <!-- 4. GALLERIA PAGE -->
+        <div id="galleria-section" class="page-section content-section">
+            <h2>Galleria</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="FOTO1.jpg" alt="Pizza 1"></div>
+                <div class="gallery-item"><img src="FOTO2.jpg" alt="Pizza 2"></div>
+                <div class="gallery-item"><img src="FOTO3.jpg" alt="Pizza 3"></div>
+                <div class="gallery-item"><img src="FOTO4.jpg" alt="Pizza 4"></div>
+            </div>
+
+            <div class="back-home-container">
+                <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+            </div>
+        </div>
+
+        <!-- 5. ORARI & DOVE SIAMO PAGE -->
+        <div id="orari-section" class="page-section content-section">
+            <h2>Orari & Dove Siamo</h2>
+            <div class="info-column-container">
+                <div class="info-card">
+                    <h3>🕒 Orari di Apertura</h3>
+                    <table class="hours-table">
+                        <tr><td class="day">lunedì</td><td class="closed">Chiuso</td></tr>
+                        <tr><td class="day">martedì</td><td class="closed">Chiuso</td></tr>
+                        <tr><td class="day">mercoledì</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">giovedì</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">venerdì</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">sabato</td><td class="time">18–23</td></tr>
+                        <tr><td class="day">domenica</td><td class="time">18–23</td></tr>
+                    </table>
+                </div>
+
+                <div class="info-card">
+                    <h3>📍 Dove Siamo</h3>
+                    <p style="margin-bottom: 15px;">
+                        <span class="address-text">Strada Marchesane, 148, 36061 Bassano del Grappa VI</span><br>
+                        <span style="font-size: 0.85rem; color: #666; display: block; margin-top: 8px;">Vieni a trovarci per gustare la vera pizza.</span>
+                    </p>
+                    <a href="https://www.google.com/maps/place/Pizzeria+Partenope/@45.7532398,11.6999262,787m/data=!3m1!1e3!4m6!3m5!1s0x4778d174cd6ba2ef:0x8ba2b7b758297db2!8m2!3d45.7532398!4d11.7025869!16s%2Fg%2F11y3n0hnlt?entry=ttu" target="_blank" class="btn-map">Apri su Google Maps</a>
+                </div>
+            </div>
+
+            <div class="back-home-container">
+                <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+            </div>
+        </div>
+
+        <!-- 6. CONTATTI PAGE -->
+        <div id="contatti-section" class="page-section">
+            <div class="content-section contact-section-wrapper">
+                <h2>Contatti</h2>
+                <div class="info-card">
+                    <p>Vieni a trovarci o contattaci per prenotare il tuo tavolo o ordinare la tua pizza:</p>
+                    <a href="tel:3297571197" class="phone-large">329 757 1197</a>
+                    <div class="whatsapp-subtext">Anche su Whatsapp</div>
+                    
+                    <div class="social-buttons-container">
+                        <a href="https://www.instagram.com/partenopeisalwaysagoodidea/" target="_blank" class="social-btn btn-instagram">
+                            📸 Instagram
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=100063692704958" target="_blank" class="social-btn btn-facebook">
+                            👍 Facebook
+                        </a>
+                        <a href="https://www.google.com/maps/place/Pizzeria+Partenope/@45.7532398,11.6999262,787m/data=!3m1!1e3!4m8!3m7!1s0x4778d174cd6ba2ef:0x8ba2b7b758297db2!8m2!3d45.7532398!4d11.7025869!9m1!1b1!16s%2Fg%2F11y3n0hnlt?entry=ttu&g_ep=EgoyMDI2MTAyOC4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="social-btn btn-review">
+                            ⭐ Recensioni
+                        </a>
+                    </div>
+                </div>
+
+                <div class="back-home-container">
+                    <a onclick="switchPage('home')" class="btn-back-home">← Torna alla Home</a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Pizzeria Partenope - Bassano del Grappa (VI) - Tutti i diritti riservati.</p>
+        </footer>
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT PER LA NAVIGAZIONE A STEP -->
+    <script>
+        function switchPage(pageId) {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('main-site-wrapper').style.display = 'none';
+            
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(sec => sec.classList.remove('active-section'));
+            
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => link.classList.remove('active'));
+
+            if (pageId === 'home') {
+                document.getElementById('home-screen').style.display = 'block';
+                document.getElementById('home-screen').classList.add('active-section');
+            } else {
+                document.getElementById('main-site-wrapper').style.display = 'block';
+                const targetSection = document.getElementById(pageId + '-section');
+                if (targetSection) {
+                    targetSection.classList.add('active-section');
+                }
+                const activeLink = document.getElementById('link-' + pageId);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+                
+                // Se entriamo nel menu, assicuriamoci di partire dalla schermata delle categorie
+                if (pageId === 'menu') {
+                    backToMenuHome();
+                }
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function openMenuCategory(categoryName) {
+            document.getElementById('menu-home-view').style.display = 'none';
+            document.getElementById('menu-products-view').style.display = 'block';
+            
+            const categories = document.querySelectorAll('.menu-category-content');
+            categories.forEach(cat => cat.classList.remove('active-category'));
+            
+            const targetCat = document.getElementById('cat-' + categoryName);
+            if (targetCat) {
+                targetCat.classList.add('active-category');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function backToMenuHome() {
+            document.getElementById('menu-home-view').style.display = 'block';
+            document.getElementById('menu-products-view').style.display = 'none';
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
